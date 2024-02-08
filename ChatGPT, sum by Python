@@ -1,0 +1,37 @@
+import pandas as pd
+from statsmodels.tsa.arima.model import ARIMA
+
+# Define the data
+data = [
+    ['Jan 31, 2024', 326.58, 326.59, 319.49, 319.50, 319.50, '832,400'],
+    ['Jan 30, 2024', 325.86, 328.08, 325.65, 327.52, 327.52, '791,900'],
+    ['Jan 29, 2024', 325.10, 328.23, 325.07, 326.75, 326.75, '622,800'],
+    ['Jan 26, 2024', 328.00, 329.27, 326.08, 326.10, 326.10, '487,000'],
+    ['Jan 25, 2024', 329.54, 330.84, 326.83, 328.59, 328.59, '392,600'],
+    ['Jan 24, 2024', 329.83, 330.93, 328.17, 328.35, 328.35, '559,700'],
+    ['Jan 23, 2024', 325.84, 329.54, 325.24, 329.47, 329.47, '596,000'],
+    ['Jan 22, 2024', 327.44, 328.15, 324.78, 324.99, 324.99, '797,300'],
+    ['Jan 19, 2024', 323.02, 328.06, 322.08, 326.28, 326.28, '736,400'],
+    ['Jan 18, 2024', 317.17, 321.04, 316.80, 320.97, 320.97, '724,500'],
+    ['Jan 17, 2024', 315.72, 317.87, 315.72, 317.03, 317.03, '446,100'],
+]
+
+# Convert the data into a pandas DataFrame
+df = pd.DataFrame(data, columns=['Date', 'Open', 'High', 'Low', 'Close', 'Adj Close', 'Volume'])
+
+# Replace the commas in the Volume column and convert it to numeric type
+df['Volume'] = df['Volume'].str.replace(',', '').astype(int)
+
+# Convert the Date column to datetime type
+df['Date'] = pd.to_datetime(df['Date'])
+
+# Set the Date column as the index
+df.set_index('Date', inplace=True)
+
+# Fit the ARIMA model
+model = ARIMA(df['Close'], order=(1, 0, 0))
+model_fit = model.fit()
+
+# Forecast the next value
+forecast = model_fit.forecast(steps=1)
+print(forecast)
